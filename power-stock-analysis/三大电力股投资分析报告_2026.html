@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三大电力股投资分析报告 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    background: #f0f2f5;
+    color: #333;
+    line-height: 1.8;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+  
+  .header {
+    background: linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%);
+    color: white;
+    padding: 50px 40px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  .header h1 { font-size: 32px; margin-bottom: 10px; letter-spacing: 2px; }
+  .header .subtitle { font-size: 15px; opacity: 0.85; }
+  .header .badge-row { margin-top: 20px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+  .badge {
+    background: rgba(255,255,255,0.15);
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    backdrop-filter: blur(10px);
+  }
+
+  .card {
+    background: white;
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .card h2 {
+    font-size: 20px;
+    color: #1a237e;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e8eaf6;
+  }
+  .card h3 {
+    font-size: 16px;
+    color: #3949ab;
+    margin: 16px 0 10px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  th, td {
+    padding: 10px 14px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+  }
+  th {
+    background: #e8eaf6;
+    color: #1a237e;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  tr:hover td { background: #f5f5ff; }
+
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+  .tag-green  { background: #e8f5e9; color: #2e7d32; }
+  .tag-red    { background: #ffebee; color: #c62828; }
+  .tag-orange { background: #fff3e0; color: #e65100; }
+  .tag-blue   { background: #e3f2fd; color: #1565c0; }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    max-height: 400px;
+    margin: 16px 0;
+  }
+  .chart-wrap canvas { width: 100% !important; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+  .score-card {
+    text-align: center;
+    padding: 20px 16px;
+    border-radius: 12px;
+    background: #f8f9ff;
+    border: 1px solid #e8eaf6;
+  }
+  .score-card .name { font-size: 16px; font-weight: 700; color: #1a237e; margin-bottom: 8px; }
+  .score-card .score { font-size: 36px; font-weight: 800; color: #3949ab; }
+  .score-card .label { font-size: 13px; color: #888; margin-top: 4px; }
+
+  .highlight-box {
+    background: #fff8e1;
+    border-left: 4px solid #f9a825;
+    padding: 14px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  .verdict {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .verdict-item {
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+  }
+  .verdict-item.gold   { background: linear-gradient(135deg, #fff8e1, #ffecb3); }
+  .verdict-item.silver { background: linear-gradient(135deg, #f5f5f5, #e0e0e0); }
+  .verdict-item.bronze { background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
+  .verdict-item .stars { font-size: 22px; margin-bottom: 6px; }
+  .verdict-item .name  { font-weight: 700; font-size: 15px; color: #333; }
+  .verdict-item .role  { font-size: 13px; color: #666; margin-top: 4px; }
+
+  .legend-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 12px; font-size: 13px; }
+  .legend-dot { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 4px; vertical-align: middle; }
+
+  .footer {
+    text-align: center;
+    color: #999;
+    font-size: 13px;
+    padding: 30px 0;
+  }
+
+  @media (max-width: 768px) {
+    .grid-2, .grid-3, .verdict { grid-template-columns: 1fr; }
+    .header { padding: 30px 20px; }
+    .header h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ============ HEADER ============ -->
+<div class="header">
+  <h1>⚡ 三大电力股 · 投资分析报告</h1>
+  <div class="subtitle">国电电力(600795) · 浙能电力(600023) · 华能蒙电(600863)</div>
+  <div class="badge-row">
+    <span class="badge">📅 2026年6月20日</span>
+    <span class="badge">📊 近十年数据回溯</span>
+    <span class="badge">🎯 高级分析师视角</span>
+  </div>
+</div>
+
+<!-- ============ 核心评级 ============ -->
+<div class="card">
+  <h2>🏆 三家公司核心评级</h2>
+  <div class="verdict">
+    <div class="verdict-item gold">
+      <div class="stars">★★★★</div>
+      <div class="name">国电电力 (600795)</div>
+      <div class="role">核心持仓 · 稳健成长型</div>
+      <div style="margin-top:8px;"><span class="tag tag-green">推荐关注</span></div>
+    </div>
+    <div class="verdict-item silver">
+      <div class="stars">★★★☆</div>
+      <div class="name">浙能电力 (600023)</div>
+      <div class="role">防御配置 · 高股息型</div>
+      <div style="margin-top:8px;"><span class="tag tag-blue">防御配置</span></div>
+    </div>
+    <div class="verdict-item bronze">
+      <div class="stars">★★★☆</div>
+      <div class="name">华能蒙电 (600863)</div>
+      <div class="role">弹性配置 · 周期成长型</div>
+      <div style="margin-top:8px;"><span class="tag tag-orange">弹性配置</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 关键指标对比 ============ -->
+<div class="card">
+  <h2>📊 2025年关键指标一览</h2>
+  <table>
+    <thead>
+      <tr><th>指标</th><th>国电电力</th><th>浙能电力</th><th>华能蒙电</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="text-align:left;font-weight:600;">营业收入</td><td>1,702.44亿</td><td>795.54亿</td><td>210.50亿</td></tr>
+      <tr><td style="text-align:left;font-weight:600;">归母净利润</td><td>71.61亿 <span class="tag tag-red">-27%</span></td><td>75.28亿 <span class="tag tag-orange">-3%</span></td><td>24.93亿 <span class="tag tag-red">-18%</span></td></tr>
+      <tr><td style="text-align:left;font-weight:600;">毛利率</td><td>16%</td><td>12%</td><td><strong>24%</strong></td></tr>
+      <tr><td style="text-align:left;font-weight:600;">ROE</td><td><strong>11.5%</strong></td><td>8.3%</td><td><strong>12.7%</strong></td></tr>
+      <tr><td style="text-align:left;font-weight:600;">资产负债率</td><td>73%</td><td><strong>41%</strong></td><td><strong>38%</strong></td></tr>
+      <tr><td style="text-align:left;font-weight:600;">股息率</td><td><strong>~4.9%</strong></td><td>~4.2%</td><td>~3.6%</td></tr>
+      <tr><td style="text-align:left;font-weight:600;">PE(TTM)</td><td>~13x</td><td>~12x</td><td>~12x</td></tr>
+      <tr><td style="text-align:left;font-weight:600;">总市值</td><td>~885亿</td><td>~780亿</td><td>~320亿</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ 十年净利润走势图 ============ -->
+<div class="card">
+  <h2>📈 近十年归母净利润走势（2015–2025）</h2>
+  <div class="legend-row">
+    <span><span class="legend-dot" style="background:#1565c0;"></span> 国电电力</span>
+    <span><span class="legend-dot" style="background:#e65100;"></span> 浙能电力</span>
+    <span><span class="legend-dot" style="background:#2e7d32;"></span> 华能蒙电</span>
+  </div>
+  <div class="chart-wrap">
+    <canvas id="chartProfit"></canvas>
+  </div>
+  <div class="highlight-box">
+    💡 <strong>关键发现</strong>：2021年煤价暴涨时，国电电力和浙能电力双双亏损，只有华能蒙电凭借<strong>自产煤优势</strong>保持了盈利。煤电一体化是火电公司穿越周期的重要能力。
+  </div>
+</div>
+
+<!-- ============ 十年营收走势图 ============ -->
+<div class="card">
+  <h2>📊 近十年营业收入走势（2015–2025）</h2>
+  <div class="chart-wrap">
+    <canvas id="chartRevenue"></canvas>
+  </div>
+</div>
+
+<!-- ============ 盈利能力雷达对比 ============ -->
+<div class="grid-2">
+  <div class="card">
+    <h2>🎯 盈利能力对比（2025年报）</h2>
+    <div class="chart-wrap">
+      <canvas id="chartRadar"></canvas>
+    </div>
+  </div>
+  <div class="card">
+    <h2>📉 资产负债率对比</h2>
+    <div class="chart-wrap">
+      <canvas id="chartDebt"></canvas>
+    </div>
+    <div class="highlight-box">
+      💡 浙能和华能蒙电负债率仅~40%，财务非常安全；国电电力虽高但央企信用背书，融资成本低。
+    </div>
+  </div>
+</div>
+
+<!-- ============ 2021年煤价危机 ============ -->
+<div class="card">
+  <h2>🔥 压力测试：2021年煤价危机中谁扛住了？</h2>
+  <div class="chart-wrap">
+    <canvas id="chart2021"></canvas>
+  </div>
+  <div style="margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center;">
+    <div style="padding:12px;background:#ffebee;border-radius:8px;">
+      <div style="font-size:20px;font-weight:800;color:#c62828;">-19.7亿</div>
+      <div style="font-size:12px;color:#666;">国电电力 · 巨亏</div>
+    </div>
+    <div style="padding:12px;background:#fff3e0;border-radius:8px;">
+      <div style="font-size:20px;font-weight:800;color:#e65100;">-8.4亿</div>
+      <div style="font-size:12px;color:#666;">浙能电力 · 亏损</div>
+    </div>
+    <div style="padding:12px;background:#e8f5e9;border-radius:8px;">
+      <div style="font-size:20px;font-weight:800;color:#2e7d32;">+4.5亿</div>
+      <div style="font-size:12px;color:#666;">华能蒙电 · 盈利 ✅</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 成长催化剂 ============ -->
+<div class="card">
+  <h2>🚀 核心成长催化剂（2026-2028年）</h2>
+  <div class="grid-3">
+    <div class="score-card">
+      <div class="name">国电电力</div>
+      <div style="font-size:13px;color:#666;margin:8px 0;">核心催化剂</div>
+      <div style="text-align:left;font-size:13px;line-height:2;">
+        🏔️ 大渡河水电2026年起投产<br>
+        💨 新能源年新增1000+万千瓦<br>
+        💰 分红承诺≥60%至2026年
+      </div>
+    </div>
+    <div class="score-card">
+      <div class="name">浙能电力</div>
+      <div style="font-size:13px;color:#666;margin:8px 0;">核心催化剂</div>
+      <div style="text-align:left;font-size:13px;line-height:2;">
+        ☢️ 三门核电二期2026年投产<br>
+        🌊 浙江海上风电规划<br>
+        📉 负债率低，加杠杆空间大
+      </div>
+    </div>
+    <div class="score-card">
+      <div class="name">华能蒙电</div>
+      <div style="font-size:13px;color:#666;margin:8px 0;">核心催化剂</div>
+      <div style="text-align:left;font-size:13px;line-height:2;">
+        🌬️ 160万千瓦风电已注入<br>
+        ⛏️ 自产煤成本优势持续<br>
+        🏷️ 更名"华能蒙电"转型信号
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 风险矩阵 ============ -->
+<div class="card">
+  <h2>⚠️ 风险提示矩阵</h2>
+  <table>
+    <thead>
+      <tr><th>风险类型</th><th>国电电力</th><th>浙能电力</th><th>华能蒙电</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="text-align:left;">电价下行</td><td><span class="tag tag-red">高影响</span></td><td><span class="tag tag-red">高影响</span></td><td><span class="tag tag-red">高影响</span></td></tr>
+      <tr><td style="text-align:left;">煤价反弹</td><td><span class="tag tag-red">高影响</span></td><td><span class="tag tag-red">高影响</span></td><td><span class="tag tag-orange">中影响</span></td></tr>
+      <tr><td style="text-align:left;">碳税/环保</td><td><span class="tag tag-orange">中影响</span></td><td><span class="tag tag-orange">中影响</span></td><td><span class="tag tag-orange">中影响</span></td></tr>
+      <tr><td style="text-align:left;">高负债风险</td><td><span class="tag tag-red">73%</span></td><td><span class="tag tag-green">41%</span></td><td><span class="tag tag-green">38%</span></td></tr>
+      <tr><td style="text-align:left;">区域集中</td><td><span class="tag tag-green">分散</span></td><td><span class="tag tag-orange">浙江为主</span></td><td><span class="tag tag-red">内蒙古为主</span></td></tr>
+      <tr><td style="text-align:left;">流动性</td><td><span class="tag tag-green">好</span></td><td><span class="tag tag-green">好</span></td><td><span class="tag tag-orange">一般</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ 配置建议 ============ -->
+<div class="card">
+  <h2>💰 投资配置方案建议</h2>
+  
+  <h3>方案A：稳健型 ⭐推荐</h3>
+  <div style="display:flex; gap:8px; margin:12px 0; height:40px; border-radius:8px; overflow:hidden;">
+    <div style="width:50%; background:#1565c0; display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;">国电电力 50%</div>
+    <div style="width:30%; background:#e65100; display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;">浙能电力 30%</div>
+    <div style="width:20%; background:#2e7d32; display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;">华能蒙电 20%</div>
+  </div>
+  <div style="color:#666;font-size:13px;">预期年化回报 8-12% | 波动中等 | 股息收益为主</div>
+
+  <h3 style="margin-top:20px;">方案B：进取型</h3>
+  <div style="display:flex; gap:8px; margin:12px 0; height:40px; border-radius:8px; overflow:hidden;">
+    <div style="width:35%; background:#1565c0; display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;">国电 35%</div>
+    <div style="width:40%; background:#2e7d32; display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;">华能蒙电 40%</div>
+    <div style="width:25%; background:#e65100; display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;">浙能 25%</div>
+  </div>
+  <div style="color:#666;font-size:13px;">预期年化回报 10-18% | 波动较大 | 成长弹性为主</div>
+
+  <h3 style="margin-top:20px;">方案C：保守型</h3>
+  <div style="display:flex; gap:8px; margin:12px 0; height:40px; border-radius:8px; overflow:hidden;">
+    <div style="width:40%; background:#1565c0; display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;">国电 40%</div>
+    <div style="width:50%; background:#e65100; display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;">浙能电力 50%</div>
+    <div style="width:10%; background:#2e7d32; display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;">10%</div>
+  </div>
+  <div style="color:#666;font-size:13px;">预期年化回报 6-10% | 波动最小 | 纯防御配置</div>
+</div>
+
+<!-- ============ 一句话总结 ============ -->
+<div class="card" style="text-align:center;">
+  <h2 style="border:none;margin-bottom:6px;">💡 一句话总结</h2>
+  <p style="font-size:18px;color:#1a237e;font-weight:600;margin:16px 0;">
+    国电电力 ❯ 核心仓位，高股息+水电成长<br>
+    浙能电力 ❯ 防御仓位，低负债+核电期权<br>
+    华能蒙电 ❯ 弹性仓位，煤电一体+风电爆发
+  </p>
+  <p style="color:#888;font-size:13px;">三只搭配持有，攻守兼备</p>
+</div>
+
+<div class="footer">
+  <p>⚠️ 免责声明：本报告仅供参考，不构成投资建议。投资有风险，入市需谨慎。</p>
+  <p>数据来源：东方财富、同花顺、英为财情、雪球等公开渠道 | 报告生成：2026年6月20日</p>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// 颜色方案
+const cGD = '#1565c0'; // 国电 - 蓝
+const cZN = '#e65100'; // 浙能 - 橙
+const cNM = '#2e7d32'; // 华能蒙电 - 绿
+
+// ============ 净利润走势图 ============
+new Chart(document.getElementById('chartProfit'), {
+  type: 'line',
+  data: {
+    labels: ['2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025'],
+    datasets: [{
+      label: '国电电力',
+      data: [43, 45, 20, 12, 17.2, 25.1, -19.7, 27.5, 56.1, 98.2, 71.61],
+      borderColor: cGD, backgroundColor: cGD+'20',
+      tension: 0.3, fill: true, pointRadius: 4, pointHoverRadius: 7
+    }, {
+      label: '浙能电力',
+      data: [69, 63, 43, 40, 43, 60.9, -8.4, -18.3, 65.2, 77.6, 75.28],
+      borderColor: cZN, backgroundColor: cZN+'20',
+      tension: 0.3, fill: true, pointRadius: 4, pointHoverRadius: 7
+    }, {
+      label: '华能蒙电',
+      data: [7.0, 3.0, 5.0, 7.8, 11.0, 7.6, 4.5, 17.62, 20.05, 30.40, 24.93],
+      borderColor: cNM, backgroundColor: cNM+'20',
+      tension: 0.3, fill: true, pointRadius: 4, pointHoverRadius: 7
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(1) + ' 亿' } }
+    },
+    scales: {
+      y: { title: { display: true, text: '归母净利润（亿元）' }, grid: { color: '#f0f0f0' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// ============ 营收走势图 ============
+new Chart(document.getElementById('chartRevenue'), {
+  type: 'bar',
+  data: {
+    labels: ['2019','2020','2021','2022','2023','2024','2025'],
+    datasets: [{
+      label: '国电电力',
+      data: [1166, 1165, 1547, 1946, 1810, 1791, 1702],
+      backgroundColor: cGD+'90', borderColor: cGD, borderWidth: 1
+    }, {
+      label: '浙能电力',
+      data: [550, 530, 710, 800, 820, 800, 795],
+      backgroundColor: cZN+'90', borderColor: cZN, borderWidth: 1
+    }, {
+      label: '华能蒙电',
+      data: [190, 180, 220, 235, 240, 238, 211],
+      backgroundColor: cNM+'90', borderColor: cNM, borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'top' },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y + ' 亿' } }
+    },
+    scales: {
+      y: { title: { display: true, text: '营业收入（亿元）' }, grid: { color: '#f0f0f0' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// ============ 雷达图 ============
+new Chart(document.getElementById('chartRadar'), {
+  type: 'radar',
+  data: {
+    labels: ['毛利率', '净利率', 'ROE', '股息率', '现金流质量', '成长性'],
+    datasets: [{
+      label: '国电电力', data: [80, 45, 90, 95, 75, 85],
+      borderColor: cGD, backgroundColor: cGD+'20', pointBackgroundColor: cGD
+    }, {
+      label: '浙能电力', data: [55, 80, 65, 82, 70, 55],
+      borderColor: cZN, backgroundColor: cZN+'20', pointBackgroundColor: cZN
+    }, {
+      label: '华能蒙电', data: [100, 90, 100, 60, 95, 78],
+      borderColor: cNM, backgroundColor: cNM+'20', pointBackgroundColor: cNM
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom' } },
+    scales: { r: { min: 0, max: 100, ticks: { display: false } } }
+  }
+});
+
+// ============ 负债率柱状图 ============
+new Chart(document.getElementById('chartDebt'), {
+  type: 'bar',
+  data: {
+    labels: ['国电电力', '浙能电力', '华能蒙电', '行业均值'],
+    datasets: [{
+      label: '资产负债率',
+      data: [73, 41, 38, 60],
+      backgroundColor: [
+        '#ef5350', '#66bb6a', '#43a047', '#bdbdbd'
+      ],
+      borderWidth: 0,
+      borderRadius: 6
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => '资产负债率: ' + ctx.parsed.y + '%' } }
+    },
+    scales: {
+      y: { min: 0, max: 80, title: { display: true, text: '%' }, grid: { color: '#f0f0f0' },
+        ticks: { callback: v => v + '%' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// ============ 2021压力测试 ============
+new Chart(document.getElementById('chart2021'), {
+  type: 'bar',
+  data: {
+    labels: ['国电电力', '浙能电力', '华能蒙电'],
+    datasets: [{
+      data: [-19.7, -8.4, 4.5],
+      backgroundColor: ['#ef5350', '#ff7043', '#66bb6a'],
+      borderWidth: 0,
+      borderRadius: 6
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => '净利润: ' + ctx.parsed.y.toFixed(1) + ' 亿' } }
+    },
+    scales: {
+      y: {
+        min: -25, max: 10,
+        title: { display: true, text: '归母净利润（亿元）' },
+        grid: { color: '#f0f0f0' }
+      },
+      x: { grid: { display: false } }
+    }
+  }
+});
+</script>
+</body>
+</html>
